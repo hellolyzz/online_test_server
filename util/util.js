@@ -2,7 +2,7 @@
 
 module.exports = {
 
-  // 把得到的data结果转化为对象
+  // 把得到的data结果数组转化为对象
   arrObj(obj,arr){
     for( var i = 0; i <= arr.length; i++){
       obj = Object.assign(obj, arr[i])

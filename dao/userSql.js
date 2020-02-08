@@ -29,7 +29,8 @@ module.exports = {
   },
   // 更改信息
   updateInfo(id, params){
-    var sql = `update tb_admin set name = '${params.name}', tel = '${params.tel}', email = '${params.email}' where id = '${id}'`;
+    var sql = `update tb_admin set name = '${params.name}', 
+    tel = '${params.tel}', email = '${params.email}' where id = '${id}'`;
     return sql
   }
 

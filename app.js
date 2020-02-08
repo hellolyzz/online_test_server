@@ -9,6 +9,8 @@ var expressJwt = require('express-jwt')
 // 跨域
 var cors = require('cors')
 // var router = require('./routes/users');
+// 可以执行多个sql语句，且只有一个回调
+// require('mysql-queries').init(options);
 
 
 // 实例化
