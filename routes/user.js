@@ -10,28 +10,29 @@ var util = require('../util/util')
 // 登录 11
 router.post('/', function (req, res) {
   // console.log(req.body.role)
-  // var role = 0;
-  var name = req.body.name;
+  var role = req.body.role;
+  var id = req.body.id;
   var pwd = req.body.pwd;
   // req.user
-  console.log(name, pwd)
+  // console.log(id, pwd, role)
   var token = encodeJwt.encodeJwt();
-  var sql = $sql.loginSql(name, pwd)
+  // var sql = $sql.loginSql(id, pwd)
 
-//   // // 管理员
-//   // if (role == 0) {
-//   //   var sql = $sql.loginSql(name, pwd)
-//   // } else if (role == 1) {
-//   //   // 教师
-//   //   var sql = $sql.loginSqlT(name, pwd);
-//   // } else {
-//   //   // 学生
-//   //   var sql = $sql.loginSqlS(name, pwd);
-//   // }
+  // 管理员
+  if (role === 0) {
+    var sql = $sql.loginSql(id, pwd)
+  } else if (role == 1) {
+    // 教师
+    var sql = $sql.loginSqlT(id, pwd);
+  } else {
+    // 学生
+    var sql = $sql.loginSqlS(id, pwd);
+  }
   publicDao.Query(sql, function (err, data) {
     if (data.length) {
       token = 'Bearer' + token;
       // console.log({ 'success': "success", "token": token, "data": data })
+      // console.log(data)
       res.send({
         // data: Object.assign(data[0], { "token": token }),
         // data: data,

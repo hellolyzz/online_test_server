@@ -6,18 +6,18 @@ module.exports = {
   // delete: 'delete from tb_admin where adminId=?',
 
   // 登录验证
-  loginSql(name, pwd) {
-    var sql = `select * from tb_admin where name = '${name}' and pwd = '${pwd}'`;
+  loginSql(id, pwd) {
+    var sql = `select * from tb_admin where id = '${id}' and pwd = '${pwd}' `;
     return sql
   },
   // 学生
-  loginSqlS(name, pwd) {
-    var sql = `select * from tb_student where name = '${name}' and pwd = '${pwd}'`;
+  loginSqlS(id, pwd) {
+    var sql = `select * from tb_student where id = '${id}' and pwd = '${pwd}'`;
     return sql
   }, 
   // 教师
-  loginSqlT(name, pwd) {
-    var sql = `select * from tb_teacher where name = '${name}' and pwd = '${pwd}'`;
+  loginSqlT(id, pwd) {
+    var sql = `select * from tb_teacher where id = '${id}' and pwd = '${pwd}'`;
     return sql
   },
 
