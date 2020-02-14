@@ -20,6 +20,7 @@ module.exports = {
       })
     })
   },
+  // 执行多个sql语句之返回一个结果
   multiQuery(sqls, params,callback) {
     pool.getConnection(function(err, connection){
       if(err) throw err;
@@ -30,49 +31,13 @@ module.exports = {
         callback && callback(results)
       })
     })
-    // pool.getConnection(function (err, connection) {
-    //   if (err) throw err
-    //   // 1
-    //   connection.query(sqls[0], function (err0, results0, fields0) {
-    //     if (err0) console.log(err0)
-    //     // 2
-    //     connection.query(sqls[1], function (err1, results1, fields1) {
-    //       connection.release()
-    //       if (err1) console.log(err1)
-    //       callback && callback(results1, fields1)
-    //     })
-    //     callback && callback(results0, fields0)
-    //   })
-    // })
-    // var arr =[];
-    // pool.getConnection(err => {
-    //   throw err
-    // },connection => {
-    //   connection.query(sqls[0], err0 => {
-    //     throw err0
-    //   },res0 => {
-    //     arr.push(res0)
-    //     connection.query(sqls[1], err1 => {
-    //       throw err1
-    //     },res1 => {
-    //       connection.release()
-    //       arr.push(res1)
-    //       return arr;
-    //     })
-    //   })
-    // })
-    // pool.getConnection(function (err, connection) {
-    //   if (err) throw err
-    //   connection.query(sqls, params, function (err, results, fields) {
-    //   //   connection.release()
-    //   //   if (err) throw err
-    //   //   callback && callback(results, fields)
-    //   // })
-    //  console.log(results[0],results[1]);
-    // })
-    // })
+  },
+  // threeQuery(sqls, params, callback){
+  //   pool.getConnection(function(err, connection){
+  //     if(err) throw err;
 
-  }
+  //   })
+  // }
 }
 //     pool.getConnection(function (err, connection) {
 //       if (err) throw err
