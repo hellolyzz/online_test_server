@@ -167,7 +167,8 @@ router.get('/getNumberQ/:paperId', function (req, res) {
 
 // 增加选择题 限制在20个以内
 // 1.先判断是否有20个满了就不能添加了
-// 2.添加
+// 3.添加
+// 2.判断题号是否重复
 router.post('/addMulti', function (req, res) {
   var params = req.body.params;
   var paperId = req.body.paperId;
@@ -175,6 +176,8 @@ router.post('/addMulti', function (req, res) {
   var sqls = $sql.addMulti(params, paperId);
   console.log(sqls);
   var sqlsNum = $sql.getNumberQ(paperId);
+  var sqlIsExsit = $sql.isQuestionIdExsit(params)
+  // 1.判断是否有20个
   publicDao.multiQuery(sqlsNum, err => {
     res.send(null, 400, "获取题目数量失败")
   }, data => {
@@ -183,23 +186,35 @@ router.post('/addMulti', function (req, res) {
     var total = util.arrObj({}, data[0]).total;
     console.log(total);
     if (total <= 19) {
-      publicDao.multiQuery(sqls, err => {
-        console.log('error:' + err)
-        return res.send({
+      // 2.判断是否存在该题号
+      publicDao.Query(sqlIsExsit, err => {
+        res.send({
           data: null,
           meta: {
-            status: 401,
-            message: '增加选择题失败'
+            status: 403,
+            message: '题号重复，请核对之后重新添加'
           }
         })
       }, data => {
-        console.log('data:' + data)
-        res.send({
-          data: data,
-          meta: {
-            status: 200,
-            message: '增加选择题成功'
-          }
+        // 3.添加
+        publicDao.multiQuery(sqls, err => {
+          console.log('error:' + err)
+          return res.send({
+            data: null,
+            meta: {
+              status: 401,
+              message: '增加选择题失败'
+            }
+          })
+        }, data => {
+          console.log('data:' + data)
+          res.send({
+            data: data,
+            meta: {
+              status: 200,
+              message: '增加选择题成功'
+            }
+          })
         })
       })
     } else {
@@ -222,6 +237,8 @@ router.post('/addJudge', function (req, res) {
   var sqls = $sql.addJudge(params, paperId);
   console.log(sqls);
   var sqlsNum = $sql.getNumberQ(paperId);
+  var sqlIsExsit = $sql.isQuestionIdExsit(params)
+  // 1.判断是否有10个
   publicDao.multiQuery(sqlsNum, err => {
     res.send(null, 400, "获取题目数量失败")
   }, data => {
@@ -230,23 +247,35 @@ router.post('/addJudge', function (req, res) {
     var total = util.arrObj({}, data[1]).total;
     console.log(total);
     if (total <= 9) {
-      publicDao.multiQuery(sqls, err => {
-        console.log('error:' + err)
-        return res.send({
+      // 2.判断是否存在该题号
+      publicDao.Query(sqlIsExsit, err => {
+        res.send({
           data: null,
           meta: {
-            status: 401,
-            message: '增加判断题失败'
+            status: 403,
+            message: '题号重复，请核对之后重新添加'
           }
         })
       }, data => {
-        console.log('data:' + data)
-        res.send({
-          data: data,
-          meta: {
-            status: 200,
-            message: '增加判断题成功'
-          }
+        // 3.添加
+        publicDao.multiQuery(sqls, err => {
+          console.log('error:' + err)
+          return res.send({
+            data: null,
+            meta: {
+              status: 401,
+              message: '增加判断题失败'
+            }
+          })
+        }, data => {
+          console.log('data:' + data)
+          res.send({
+            data: data,
+            meta: {
+              status: 200,
+              message: '增加判断题成功'
+            }
+          })
         })
       })
     } else {
@@ -269,6 +298,8 @@ router.post('/addFill', function (req, res) {
   var sqls = $sql.addFill(params, paperId);
   console.log(sqls);
   var sqlsNum = $sql.getNumberQ(paperId);
+  var sqlIsExsit = $sql.isQuestionIdExsit(params)
+  // 1.是否有10个
   publicDao.multiQuery(sqlsNum, err => {
     res.send(null, 400, "获取题目数量失败")
   }, data => {
@@ -277,24 +308,36 @@ router.post('/addFill', function (req, res) {
     var total = util.arrObj({}, data[2]).total;
     console.log(total);
     if (total <= 9) {
-      publicDao.multiQuery(sqls, err => {
-        console.log('error:' + err)
-        return res.send({
+      // 2.判重
+      publicDao.Query(sqlIsExsit, err => {
+        res.send({
           data: null,
           meta: {
-            status: 401,
-            message: '增加判断题失败'
+            status: 403,
+            message: '题号重复，请核对之后重新添加'
           }
         })
       }, data => {
-        // console.log('data:', data)
-        // console.log('typeof',typeof(data))
-        res.send({
-          data: data,
-          meta: {
-            status: 200,
-            message: '增加判断题成功'
-          }
+        // 3.添加
+        publicDao.multiQuery(sqls, err => {
+          console.log('error:' + err)
+          return res.send({
+            data: null,
+            meta: {
+              status: 401,
+              message: '增加判断题失败'
+            }
+          })
+        }, data => {
+          // console.log('data:', data)
+          // console.log('typeof',typeof(data))
+          res.send({
+            data: data,
+            meta: {
+              status: 200,
+              message: '增加判断题成功'
+            }
+          })
         })
       })
     } else {
@@ -454,12 +497,12 @@ router.post('/editFill/:id', function (req, res) {
 })
 
 // 删除题目
-router.delete('/deleteMulti/:id',function(req,res){
+router.delete('/deleteMulti/:id', function (req, res) {
   var id = req.params.id;
   var sql = $sql.deleteMulti(id);
   console.log(id, sql)
-  publicDao.Query(sql, function(err, data){
-    if(err){
+  publicDao.Query(sql, function (err, data) {
+    if (err) {
       return res.send({
         data: null,
         meta: {
@@ -479,12 +522,12 @@ router.delete('/deleteMulti/:id',function(req,res){
   })
 })
 
-router.delete('/deleteJudge/:id',function(req,res){
+router.delete('/deleteJudge/:id', function (req, res) {
   var id = req.params.id;
   var sql = $sql.deleteJudge(id);
   console.log(id, sql)
-  publicDao.Query(sql, function(err, data){
-    if(err){
+  publicDao.Query(sql, function (err, data) {
+    if (err) {
       return res.send({
         data: null,
         meta: {
@@ -504,12 +547,12 @@ router.delete('/deleteJudge/:id',function(req,res){
   })
 })
 
-router.delete('/deleteFill/:id',function(req,res){
+router.delete('/deleteFill/:id', function (req, res) {
   var id = req.params.id;
   var sql = $sql.deleteFill(id);
   console.log(id, sql)
-  publicDao.Query(sql, function(err, data){
-    if(err){
+  publicDao.Query(sql, function (err, data) {
+    if (err) {
       return res.send({
         data: null,
         meta: {

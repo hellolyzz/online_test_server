@@ -127,4 +127,10 @@ module.exports = {
   deleteFill(id){
     return sql = `delete from tb_fillques where questionId = ${id}`;
   },
+
+  // 添加题目时候 判断 题号questionId是否存在
+  isQuestionIdExsit(params){
+    var sql = `select * from tb_papermanage where questionId = '${params.questionId}'`;
+    return sql;
+  },
 }
