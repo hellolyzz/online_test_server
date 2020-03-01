@@ -13,5 +13,34 @@ module.exports = {
   // 修改学生信息
   editStuInfo(params){
     return sql = `update tb_student set tel = '${params.tel}', email = '${params.email}' , pwd = '${params.pwd}' where id = ${params.id}`
+  },
+  // 根据testCode获取试卷
+  getpaperInfo(testCode){
+    return sql = `select * from tb_testmanage where testCode = ${testCode}`
+  },
+  // 获取某试卷的全部题目
+  getQuesByPaperCode(testCode){
+    // var paperId = `select paperId from tb_testmanage where testCode = ${testCode} `;
+    return sql = 
+    [
+      // 选择题
+      `select * from tb_multichoice where questionId in 
+    (select questionId from tb_papermanage where questionType = 1 and 
+      paperId in ( select paperId from tb_testmanage where testCode = ${testCode} ))`,
+      // 判断题
+      `select * from tb_judgeques where questionId in 
+      (select questionId from tb_papermanage where questionType = 2 and 
+        paperId in ( select paperId from tb_testmanage where testCode = ${testCode} ))`,
+    //   // 填空题
+      `select * from tb_fillques where questionId in 
+    (select questionId from tb_papermanage where questionType = 3 and 
+      paperId in ( select paperId from tb_testmanage where testCode = ${testCode} ))`,
+    ]
+    // `select * from tb_papermanage where paperId 
+  },
+  // 上传成绩
+  postScore(params){
+    return sql = `insert into tb_score set testCode = ${params.testCode}, scoreId = null, subject = '${params.subject}',
+    studentId = ${params.studentId}, score = ${params.score}, answerTime = '${params.answerTime}' `
   }
 }
