@@ -11,7 +11,7 @@ router.post('/getTestInfo', function (req, res) {
   // console.log(queryInfo, params)
   var sqls = $sql.getTestInfo(params, queryInfo);
   // console.log(sqls)
-  publicDao.multiQuery(sql, err => {
+  publicDao.multiQuery(sqls, err => {
     return res.send({
       data: {
         data: null
@@ -94,32 +94,64 @@ router.put('/editStu', function (req, res) {
   })
 })
 
-// 获取试卷信息
-router.get('/getPaperInfo/:testCode', function (req, res) {
-  var testCode = req.params.testCode;
+// 根据试卷编号 获取试卷信息
+// 1. 先判断学生是否做过该试卷 分数库里面是否有成绩
+// 2. 若有成绩表示做过。不展示该试卷。无成绩，则需要获取
+router.get('/getPaperInfo', function (req, res) {
+  var testCode = req.query.testCode;
+  var id = req.query.id;
   var sql = $sql.getpaperInfo(testCode);
-  // console.log(testCode, sql)
-  publicDao.Query(sql, function (err, data) {
-    if (err) {
+  var sqlScore = $sql.IsScore(id, testCode)
+  // console.log(testCode, req.params)
+  publicDao.Query(sqlScore, function (err, data) {
+    var dataStr = JSON.stringify(data)
+    data = JSON.parse(dataStr)
+    // console.log(data)
+    if (data.length) {
+      // 数组不为空即有该科目的成绩
       return res.send({
         data: null,
         meta: {
           status: 401,
-          message: '获取试卷信息失败'
+          message: '你已经做过该试卷，不能够进行重复答题,请前往“我的成绩”查看该学科分数'
+        }
+      })
+    } else {
+      // 数组为空，获取试卷信息
+      publicDao.Query(sql, function (err, data) {
+        if (err) {
+          return res.send({
+            data: null,
+            meta: {
+              status: 401,
+              message: '获取试卷信息失败'
+            }
+          })
+        }
+        var dataStr = JSON.stringify(data)
+        data = JSON.parse(dataStr)
+        // console.log(data)
+        res.send({
+          data: util.arrObj({}, data),
+          meta: {
+            status: 200,
+            message: '获取试卷信息成功'
+          }
+        })
+      })
+    }
+    // 有错误
+    if (err) {
+      return res.send({
+        data: null,
+        meta: {
+          status: 400,
+          message: '获取试卷失败'
         }
       })
     }
-    var dataStr = JSON.stringify(data)
-    data = JSON.parse(dataStr)
-    // console.log(data)
-    res.send({
-      data: util.arrObj({}, data),
-      meta: {
-        status: 200,
-        message: '获取试卷信息成功'
-      }
-    })
   })
+
 })
 
 // 获取试卷全部题目信息
@@ -151,12 +183,12 @@ router.get('/getQuesByPaperCode/:id', function (req, res) {
 })
 
 // 上传成绩
-router.post('/postScore', function(req, res){
+router.post('/postScore', function (req, res) {
   var params = req.body.params
   var sql = $sql.postScore(params)
   // console.log(params,sql)
-  publicDao.Query(sql, function(err, data){
-    if(err){
+  publicDao.Query(sql, function (err, data) {
+    if (err) {
       return res.send({
         data: null,
         meta: {
@@ -166,12 +198,42 @@ router.post('/postScore', function(req, res){
       })
     }
     // console.log(data)
-    if(data){
+    if (data) {
       res.send({
         data: null,
         meta: {
           status: 200,
           message: '上传成绩成功'
+        }
+      })
+    }
+  })
+})
+
+// 根据学生 id 查询成绩
+router.get('/getScore/:id', function (req, res) {
+  var id = req.params.id;
+  var sql = $sql.getScore(id)
+  // console.log(id,sql)
+  publicDao.Query(sql, function (err, data) {
+    if (err) {
+      return res.send({
+        data: null,
+        meta: {
+          status: 401,
+          message: '获取成绩失败'
+        }
+      })
+    }
+    var dataStr = JSON.stringify(data)
+    data = JSON.parse(dataStr)
+    // console.log(data)
+    if (data) {
+      res.send({
+        data: data,
+        meta: {
+          status: 200,
+          message: '获取成绩成功'
         }
       })
     }

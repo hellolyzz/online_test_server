@@ -18,6 +18,11 @@ module.exports = {
   getpaperInfo(testCode){
     return sql = `select * from tb_testmanage where testCode = ${testCode}`
   },
+  // 根据某学生的 testCode id 
+  // 判断是否做过该试卷 
+  IsScore(id, testCode){
+    return sql = `select score from tb_score where studentId = ${id} and testCode = ${testCode}`
+  },
   // 获取某试卷的全部题目
   getQuesByPaperCode(testCode){
     // var paperId = `select paperId from tb_testmanage where testCode = ${testCode} `;
@@ -42,5 +47,10 @@ module.exports = {
   postScore(params){
     return sql = `insert into tb_score set testCode = ${params.testCode}, scoreId = null, subject = '${params.subject}',
     studentId = ${params.studentId}, score = ${params.score}, answerTime = '${params.answerTime}' `
-  }
+  },
+  // 根据学生id查询成绩
+  getScore(id){
+    return sql = `select * from tb_score where studentId = ${id}`
+  },
+  
 }
