@@ -10,7 +10,7 @@ var util = require('../util/util')
 // 2.无重复才可以插入表中
 router.post('/', function (req, res) {
   var params = req.body.params;
-  console.log(params)
+  // console.log(params)
   var sql = $sql.addPaper(params)
   var sql2 = $sql.isTeseCodeExsit(params)
   // console.log(sql)
@@ -18,21 +18,19 @@ router.post('/', function (req, res) {
     var dataStr = JSON.stringify(data)
     data = JSON.parse(dataStr)
     // 是个数组，判断数组有无值，有则testCode存在不可以插入，无则可以插入该次考试
-    console.log(data)
+    // console.log(data)
     // 表示不存在testCOde，则插入
     if (!data.length) {
-      publicDao.Query(sql, function (err, data) {
-        if (err) {
-          console.log(err)
-          return res.send({
-            data: null,
-            meta: {
-              status: 400,
-              message: "服务器开小差了"
-            }
-          })
-        }
-        console.log(data)
+      publicDao.multiQuery(sql, err => {
+        return res.send({
+          data: null,
+          meta: {
+            status: 400,
+            message: "服务器开小差了"
+          }
+        })
+      }, data => {
+        // console.log(data)
         res.send({
           data: data,
           meta: {
