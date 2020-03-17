@@ -15,5 +15,9 @@ module.exports = {
     return sql = [`select * from tb_score where testCode = ${testCode}`,
     `select * from tb_student where id in (select studentId from tb_score where testCode = ${testCode})`  
   ]
+  },
+  // 根据id查询成绩
+  getScoreById(id){
+    return sql = `select * from tb_score where studentId = ${id}`
   }
 }

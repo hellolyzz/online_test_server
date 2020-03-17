@@ -94,4 +94,32 @@ router.get('/getAllScore/:id', function(req, res){
   
 })
 
+// 根据id查成绩
+router.get('/getScoreById/:id',function(req, res){
+  var id = req.params.id;
+  var sql = $sql.getScoreById(id);
+  console.log(id, sql)
+  publicDao.Query(sql, function(err,data){
+    if(err){
+      return res.send({
+        data: null,
+        meta: {
+          status: 402,
+          message: '获取该学生成绩失败'
+        }
+      })
+    }
+    var dataStr = JSON.stringify(data)
+    data = JSON.parse(dataStr)
+    console.log(data)
+    res.send({
+      data: data,
+      meta: {
+        status: 200,
+        message: '获取该学生成绩成功'
+      }
+    })
+  })
+})
+
 module.exports = router

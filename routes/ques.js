@@ -187,35 +187,51 @@ router.post('/addMulti', function (req, res) {
     console.log(total);
     if (total <= 19) {
       // 2.判断是否存在该题号
-      publicDao.Query(sqlIsExsit, err => {
-        res.send({
-          data: null,
-          meta: {
-            status: 403,
-            message: '题号重复，请核对之后重新添加'
-          }
-        })
-      }, data => {
-        // 3.添加
-        publicDao.multiQuery(sqls, err => {
-          console.log('error:' + err)
+      publicDao.Query(sqlIsExsit, function (err, data) {
+        if (err) {
           return res.send({
             data: null,
             meta: {
-              status: 401,
-              message: '增加选择题失败'
+              status: 405,
+              message: '添加失败请重试'
             }
           })
-        }, data => {
-          console.log('data:' + data)
+        }
+        var dataStrisExsit = JSON.stringify(data)
+        data = JSON.parse(dataStrisExsit)
+        console.log('dataisExsit', data)
+        // 没有重复题号
+        if (data.length === 0) {
+          // 3.添加
+          publicDao.multiQuery(sqls, err => {
+            console.log('error:' + err)
+            return res.send({
+              data: null,
+              meta: {
+                status: 401,
+                message: '增加选择题失败'
+              }
+            })
+          }, data => {
+            // console.log('data:' + data)
+            res.send({
+              data: data,
+              meta: {
+                status: 200,
+                message: '增加选择题成功'
+              }
+            })
+          })
+        } else {
+          // 有重复题号
           res.send({
-            data: data,
+            data: null,
             meta: {
-              status: 200,
-              message: '增加选择题成功'
+              status: 403,
+              message: '题号与已有题目重复，请核对正确后再添加'
             }
           })
-        })
+        }
       })
     } else {
       res.send({
@@ -248,35 +264,51 @@ router.post('/addJudge', function (req, res) {
     console.log(total);
     if (total <= 9) {
       // 2.判断是否存在该题号
-      publicDao.Query(sqlIsExsit, err => {
-        res.send({
-          data: null,
-          meta: {
-            status: 403,
-            message: '题号重复，请核对之后重新添加'
-          }
-        })
-      }, data => {
-        // 3.添加
-        publicDao.multiQuery(sqls, err => {
-          console.log('error:' + err)
+      publicDao.Query(sqlIsExsit, function (err, data) {
+        if (err) {
           return res.send({
             data: null,
             meta: {
-              status: 401,
-              message: '增加判断题失败'
+              status: 405,
+              message: '添加失败请重试'
             }
           })
-        }, data => {
-          console.log('data:' + data)
+        }
+        var dataStrisExsit = JSON.stringify(data)
+        data = JSON.parse(dataStrisExsit)
+        console.log('dataisExsit', data)
+        // 没有重复题号
+        if (data.length === 0) {
+          // 3.添加
+          publicDao.multiQuery(sqls, err => {
+            console.log('error:' + err)
+            return res.send({
+              data: null,
+              meta: {
+                status: 401,
+                message: '增加判断题失败'
+              }
+            })
+          }, data => {
+            // console.log('data:' + data)
+            res.send({
+              data: data,
+              meta: {
+                status: 200,
+                message: '增加判断题成功'
+              }
+            })
+          })
+        } else {
+          // 有重复题号
           res.send({
-            data: data,
+            data: null,
             meta: {
-              status: 200,
-              message: '增加判断题成功'
+              status: 403,
+              message: '题号与已有题目重复，请核对正确后再添加'
             }
           })
-        })
+        }
       })
     } else {
       res.send({
@@ -309,36 +341,51 @@ router.post('/addFill', function (req, res) {
     console.log(total);
     if (total <= 9) {
       // 2.判重
-      publicDao.Query(sqlIsExsit, err => {
-        res.send({
-          data: null,
-          meta: {
-            status: 403,
-            message: '题号重复，请核对之后重新添加'
-          }
-        })
-      }, data => {
-        // 3.添加
-        publicDao.multiQuery(sqls, err => {
-          console.log('error:' + err)
+      publicDao.Query(sqlIsExsit, function (err, data) {
+        if (err) {
           return res.send({
             data: null,
             meta: {
-              status: 401,
-              message: '增加判断题失败'
+              status: 405,
+              message: '添加失败请重试'
             }
           })
-        }, data => {
-          // console.log('data:', data)
-          // console.log('typeof',typeof(data))
+        }
+        var dataStrisExsit = JSON.stringify(data)
+        data = JSON.parse(dataStrisExsit)
+        console.log('dataisExsit', data)
+        // 没有重复题号
+        if (data.length === 0) {
+          // 3.添加
+          publicDao.multiQuery(sqls, err => {
+            console.log('error:' + err)
+            return res.send({
+              data: null,
+              meta: {
+                status: 401,
+                message: '增加填空题失败'
+              }
+            })
+          }, data => {
+            // console.log('data:' + data)
+            res.send({
+              data: data,
+              meta: {
+                status: 200,
+                message: '增加填空题成功'
+              }
+            })
+          })
+        } else {
+          // 有重复题号
           res.send({
-            data: data,
+            data: null,
             meta: {
-              status: 200,
-              message: '增加判断题成功'
+              status: 403,
+              message: '题号与已有题目重复，请核对正确后再添加'
             }
           })
-        })
+        }
       })
     } else {
       res.send({
