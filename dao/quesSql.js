@@ -129,8 +129,16 @@ module.exports = {
   },
 
   // 添加题目时候 判断 题号questionId是否存在
-  isQuestionIdExsit(params){
-    var sql = `select * from tb_papermanage where questionId = '${params.questionId}'`;
+  isQuestionIdExsitM(params){
+    var sql = `select * from tb_multichoice where questionId = '${params.questionId}'`;
+    return sql;
+  },
+  isQuestionIdExsitJ(params){
+    var sql = `select * from tb_judgeques where questionId = '${params.questionId}'`;
+    return sql;
+  },
+  isQuestionIdExsitF(params){
+    var sql = `select * from tb_fillques where questionId = '${params.questionId}'`;
     return sql;
   },
 }

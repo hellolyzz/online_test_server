@@ -176,7 +176,7 @@ router.post('/addMulti', function (req, res) {
   var sqls = $sql.addMulti(params, paperId);
   console.log(sqls);
   var sqlsNum = $sql.getNumberQ(paperId);
-  var sqlIsExsit = $sql.isQuestionIdExsit(params)
+  var sqlIsExsit = $sql.isQuestionIdExsitM(params)
   // 1.判断是否有20个
   publicDao.multiQuery(sqlsNum, err => {
     res.send(null, 400, "获取题目数量失败")
@@ -199,7 +199,7 @@ router.post('/addMulti', function (req, res) {
         }
         var dataStrisExsit = JSON.stringify(data)
         data = JSON.parse(dataStrisExsit)
-        console.log('dataisExsit', data)
+        console.log('dataisExsitM:', data)
         // 没有重复题号
         if (data.length === 0) {
           // 3.添加
@@ -251,9 +251,9 @@ router.post('/addJudge', function (req, res) {
   var paperId = req.body.paperId;
   console.log(params, paperId);
   var sqls = $sql.addJudge(params, paperId);
-  console.log(sqls);
+  // console.log(sqls);
   var sqlsNum = $sql.getNumberQ(paperId);
-  var sqlIsExsit = $sql.isQuestionIdExsit(params)
+  var sqlIsExsit = $sql.isQuestionIdExsitJ(params)
   // 1.判断是否有10个
   publicDao.multiQuery(sqlsNum, err => {
     res.send(null, 400, "获取题目数量失败")
@@ -276,7 +276,7 @@ router.post('/addJudge', function (req, res) {
         }
         var dataStrisExsit = JSON.stringify(data)
         data = JSON.parse(dataStrisExsit)
-        console.log('dataisExsit', data)
+        console.log('dataisExsitJ:', data)
         // 没有重复题号
         if (data.length === 0) {
           // 3.添加
@@ -326,11 +326,11 @@ router.post('/addJudge', function (req, res) {
 router.post('/addFill', function (req, res) {
   var params = req.body.params;
   var paperId = req.body.paperId;
-  console.log(params, paperId);
+  // console.log(params, paperId);
   var sqls = $sql.addFill(params, paperId);
-  console.log(sqls);
+  // console.log(sqls);
   var sqlsNum = $sql.getNumberQ(paperId);
-  var sqlIsExsit = $sql.isQuestionIdExsit(params)
+  var sqlIsExsit = $sql.isQuestionIdExsitF(params)
   // 1.是否有10个
   publicDao.multiQuery(sqlsNum, err => {
     res.send(null, 400, "获取题目数量失败")
@@ -338,7 +338,7 @@ router.post('/addFill', function (req, res) {
     var dataStr = JSON.stringify(data);
     var data = JSON.parse(dataStr)
     var total = util.arrObj({}, data[2]).total;
-    console.log(total);
+    // console.log(total);
     if (total <= 9) {
       // 2.判重
       publicDao.Query(sqlIsExsit, function (err, data) {
@@ -353,12 +353,12 @@ router.post('/addFill', function (req, res) {
         }
         var dataStrisExsit = JSON.stringify(data)
         data = JSON.parse(dataStrisExsit)
-        console.log('dataisExsit', data)
+        // console.log('dataisExsitF:', data)
         // 没有重复题号
         if (data.length === 0) {
           // 3.添加
           publicDao.multiQuery(sqls, err => {
-            console.log('error:' + err)
+            // console.log('error:' + err)
             return res.send({
               data: null,
               meta: {
@@ -410,7 +410,7 @@ router.get('/findMultiById/:id', function (req, res) {
     }
     var dataStr = JSON.stringify(data);
     var data = JSON.parse(dataStr)
-    console.log(data);
+    // console.log(data);
     res.send({
       data: util.arrObj({}, data),
       meta: {
@@ -430,7 +430,7 @@ router.get('/findJudgeById/:id', function (req, res) {
     }
     var dataStr = JSON.stringify(data);
     var data = JSON.parse(dataStr)
-    console.log(data);
+    // console.log(data);
     res.send({
       data: util.arrObj({}, data),
       meta: {
@@ -450,7 +450,7 @@ router.get('/findFillById/:id', function (req, res) {
     }
     var dataStr = JSON.stringify(data);
     var data = JSON.parse(dataStr)
-    console.log(data);
+    // console.log(data);
     res.send({
       data: util.arrObj({}, data),
       meta: {
