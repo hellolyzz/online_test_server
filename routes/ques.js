@@ -9,10 +9,16 @@ var util = require('../util/util')
 
 
 // 获取所有考试场次信息
-router.get('/TestInfo', function (req, res) {
+router.get('/TestInfo/:institute', function (req, res) {
   // console.log(req.query)
   var queryInfo = req.query;
-  var sqls = $sql.getTestInfo(queryInfo)
+  var institute = req.params.institute
+  if (institute === 'undefined') {
+    // 管理员
+    var sqls = $sql.getTestInfo(queryInfo)
+  } else {
+    var sqls = $sql.getTestInfoByTea(queryInfo, institute)
+  }
   publicDao.multiQuery(sqls, err => {
     if (err) {
       return res.send({

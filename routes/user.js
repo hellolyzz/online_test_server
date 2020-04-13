@@ -21,7 +21,7 @@ router.post('/', function (req, res) {
   // 管理员
   if (role === 0) {
     var sql = $sql.loginSql(id, pwd)
-  } else if (role == 1) {
+  } else if (role === 1) {
     // 教师
     var sql = $sql.loginSqlT(id, pwd);
   } else {
@@ -66,10 +66,18 @@ router.post('/', function (req, res) {
 
 
 // 获取信息 11
-router.get('/:id', function (req, res) {
-  var id = req.params.id;
-  // console.log(id)
-  var sql = $sql.getInfo(id)
+router.get('/', function (req, res) {
+  var role = req.query.role;
+  var id = req.query.idtop;
+  console.log(id,role)
+  if (role === '0') {
+    // 管理员
+    var sql = $sql.getInfo(id)
+  } else if (role === '1') {
+    // 教师
+    var sql = $sql.getInfoT(id)
+  } 
+  console.log('sql',sql)
   publicDao.Query(sql, function (err, data) {
     if (err) {
       return res.send({
@@ -81,9 +89,9 @@ router.get('/:id', function (req, res) {
       })
       // throw err 
     }
-    // console.log(err)
+    console.log(err)
     // console.log('获取信息成功')
-    // console.log('getInfoData',data)
+    console.log('getInfoData',data)
     res.send({
       data: util.arrObj({},data),
       // data: data,

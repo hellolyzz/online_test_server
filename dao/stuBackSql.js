@@ -16,11 +16,18 @@ module.exports = {
        '${params.tel}', '${params.email}', '${params.pwd}', '${params.role}')`;
     return sql;
   },
-  // 获取所有学生信息
+  // 管理员获取所有学生信息
   getAllStu(queryInfo){
     var offset = queryInfo.pagesize * (queryInfo.pagenum - 1);
     // var sql = `SELECT * FROM tb_student limit ${offset},${queryInfo.pagesize}`;
     var sql = [`SELECT * FROM tb_student limit ${offset},${queryInfo.pagesize}` , `select count(*) as total from tb_student`] ;
+    return sql;
+  },
+  // 教师获取所有学生信息
+  getAllStuByTea(queryInfo, institute){
+    var offset = queryInfo.pagesize * (queryInfo.pagenum - 1);
+    // var sql = `SELECT * FROM tb_student limit ${offset},${queryInfo.pagesize}`;
+    var sql = [`SELECT * FROM tb_student where institute = '${institute}' limit ${offset},${queryInfo.pagesize} ` , `select count(*) as total from tb_student where institute = '${institute}'`] ;
     return sql;
   },
   // 查询单个学生信息

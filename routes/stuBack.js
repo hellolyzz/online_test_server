@@ -7,38 +7,107 @@ var util = require('../util/util')
 var $sql = require('../dao/stuBackSql')
 
 
-// 获取所有学生信息
-router.get('/stuInfo',
+// 管理员获取所有学生信息
+router.get('/stuInfo/:inistitute',
   function (req, res) {
     var queryInfo = req.query;
-    var sqls = $sql.getAllStu(queryInfo)
-    // console.log(sqls)
-    publicDao.multiQuery(sqls, err => {
-      res.send({
-        data: null,
-        meta: {
-          message: '获取失败',
-          status: 401
-        }
+    var inistitute = req.params.inistitute;
+    console.log(queryInfo, inistitute)
+    // 管理员
+    if (inistitute === 'undefined') {
+      var sqls = $sql.getAllStu(queryInfo)
+      // console.log(sqls)
+      publicDao.multiQuery(sqls, err => {
+        res.send({
+          data: null,
+          meta: {
+            message: '获取失败',
+            status: 401
+          }
+        })
+      }, data => {
+        var dataStr = JSON.stringify(data);
+        var data = JSON.parse(dataStr);
+        // console.log(data);
+        res.send({
+          data: {
+            data: data[0],
+            total: util.arrObj({}, data[1]).total,
+            pagesize: parseInt(queryInfo.pagesize),
+            pagenum: parseInt(queryInfo.pagenum),
+          },
+          meta: {
+            status: 200,
+            message: 'success'
+          }
+        })
       })
-    }, data => {
-      var dataStr = JSON.stringify(data);
-      var data = JSON.parse(dataStr);
-      // console.log(data);
-      res.send({
-        data: {
-          data: data[0],
-          total: util.arrObj({}, data[1]).total,
-          pagesize: parseInt(queryInfo.pagesize),
-          pagenum: parseInt(queryInfo.pagenum),
-        },
-        meta: {
-          status: 200,
-          message: 'success'
-        }
+    } else{
+      var sqls = $sql.getAllStuByTea(queryInfo, inistitute)
+      // console.log(sqls)
+      publicDao.multiQuery(sqls, err => {
+        res.send({
+          data: null,
+          meta: {
+            message: '获取失败',
+            status: 401
+          }
+        })
+      }, data => {
+        var dataStr = JSON.stringify(data);
+        var data = JSON.parse(dataStr);
+        // console.log(data);
+        res.send({
+          data: {
+            data: data[0],
+            total: util.arrObj({}, data[1]).total,
+            pagesize: parseInt(queryInfo.pagesize),
+            pagenum: parseInt(queryInfo.pagenum),
+          },
+          meta: {
+            status: 200,
+            message: 'success'
+          }
+        })
       })
-    })
+    }
+
   })
+
+// 教师获取所有学生信息
+// router.get('/stuInfoByTea/:institute',
+//   function (req, res) {
+//     var institute = req.params.institute
+//     var queryInfo = req.query;
+//     console.log(queryInfo,institute)
+//     var sqls = $sql.getAllStuByTea(queryInfo,institute)
+//     // console.log(sqls)
+//     publicDao.multiQuery(sqls, err => {
+//       res.send({
+//         data: null,
+//         meta: {
+//           message: '获取失败',
+//           status: 401
+//         }
+//       })
+//     }, data => {
+//       var dataStr = JSON.stringify(data);
+//       var data = JSON.parse(dataStr);
+//       // console.log(data);
+//       res.send({
+//         data: {
+//           data: data[0],
+//           total: util.arrObj({}, data[1]).total,
+//           pagesize: parseInt(queryInfo.pagesize),
+//           pagenum: parseInt(queryInfo.pagenum),
+//         },
+//         meta: {
+//           status: 200,
+//           message: 'success'
+//         }
+//       })
+//     })
+//   })
 
 // 获取单个学生信息
 router.get('/getSingleInfo/:id', function (req, res) {
@@ -97,11 +166,12 @@ router.put('/editStu', function (req, res) {
 })
 
 
+
 // 增加学生信息
 router.post('/addStu', function (req, res) {
   var params = req.body;
   params = Object.assign(params, { pwd: '123456' }, { role: '2' })
-  console.log(params)
+  console.log('stuInfo:',params)
   var sql = $sql.addStu(params);
   var sql2 = $sql.isIdExsit(params);
   publicDao.Query(sql2, function (err, data) {
@@ -135,7 +205,7 @@ router.post('/addStu', function (req, res) {
         data: null,
         meta: {
           status: 401,
-          message: '此学号已存在'
+          message: '您所添加的学号已经存在，请仔细核对之后再添加！'
         }
       })
     }
@@ -143,7 +213,7 @@ router.post('/addStu', function (req, res) {
       res.send({
         data: null,
         meta: {
-          status: 401,
+          status: 402,
           message: '添加失败'
         }
       })

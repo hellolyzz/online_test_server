@@ -2,8 +2,12 @@ module.exports = {
   // 查询已有考试的 
   getAllSubject(queryInfo){
     var offset = queryInfo.pagesize * (queryInfo.pagenum - 1);
-    // return sql = `select * from tb_subject`
-    var sql = [`SELECT * FROM tb_subject limit ${offset},${queryInfo.pagesize}` , `select count(*) as total from tb_subject`] ;
+    var sql = [`SELECT * FROM tb_testmanage limit ${offset},${queryInfo.pagesize}` , `select count(*) as total from tb_testmanage`] ;
+    return sql;
+  },
+  getAllSubjectByTea(queryInfo,institute){
+    var offset = queryInfo.pagesize * (queryInfo.pagenum - 1);
+    var sql = [`SELECT * FROM tb_testmanage where institute = '${institute}' limit ${offset},${queryInfo.pagesize}` , `select count(*) as total from tb_testmanage where institute = '${institute}'`] ;
     return sql;
   },
   // 查询是否有该科目的成绩存在

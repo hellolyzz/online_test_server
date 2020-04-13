@@ -21,15 +21,16 @@ router.post('/', function (req, res) {
     // console.log(data)
     // 表示不存在testCOde，则插入
     if (!data.length) {
-      publicDao.multiQuery(sql, err => {
-        return res.send({
-          data: null,
-          meta: {
-            status: 400,
-            message: "服务器开小差了"
-          }
-        })
-      }, data => {
+      publicDao.Query(sql, function (err, data) {
+        if (err) {
+          return res.send({
+            data: null,
+            meta: {
+              status: 400,
+              message: "服务器开小差了"
+            }
+          })
+        }
         // console.log(data)
         res.send({
           data: data,

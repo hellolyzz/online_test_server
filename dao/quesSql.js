@@ -10,6 +10,16 @@ module.exports = {
     // return sql;
   },
 
+  getTestInfoByTea(params,institute) {
+    var offset = params.pagesize * (params.pagenum - 1);
+    var sql = [`select * from tb_testmanage where institute = '${institute}' limit ${offset}, ${params.pagesize}`, `select count(*) as total from tb_testmanage where institute = '${institute}'`];
+    return sql;
+    // var sql = `select * from tb_multichoice where questionId in 
+    // (select questionId from tb_papermanage where questionType = 1 and paperId = '${paperId}' ) `;
+    // // select * from fill_question where questionId in (select questionId from paper_manage where questionType = 2 and paperId = #{paperId})")
+    // return sql;
+  },
+
   // 获取多选题
   getMultichoice(paperId, params) {
     var offset = params.pagesize * (params.pagenum - 1);

@@ -21,11 +21,15 @@ module.exports = {
     return sql
   },
 
-  // 获取个人信息 by id
+  // 管理员获取个人信息 by id
   getInfo(id){
     var sql = `select * from tb_admin where id = '${id}'`;
-    // where id = '${id}'
-    return sql;
+    return sql
+  },
+  // 教师
+  getInfoT(id){
+    var sql = `select * from tb_teacher where id = '${id}' `
+    return sql
   },
   // 更改信息
   updateInfo(id, params){

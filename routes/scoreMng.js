@@ -5,12 +5,19 @@ var $sql = require('../dao/scoreSql')
 var util = require('../util/util')
 
 // 获取所有考试学科
-router.get('/',function(req, res){
+router.get('/:institute', function (req, res) {
   var queryInfo = req.query;
-  console.log(queryInfo)
-  var sql = $sql.getAllSubject(queryInfo)
-  console.log(sql)
-  publicDao.multiQuery(sql,err => {
+  var institute = req.params.institute
+  console.log(queryInfo, institute)
+  if (institute === 'undefined') {
+    // 管理员
+    var sql = $sql.getAllSubject(queryInfo)
+  } else {
+    // 教师
+    var sql = $sql.getAllSubjectByTea(queryInfo, institute)
+    // console.log(sql)
+  }
+  publicDao.multiQuery(sql, err => {
     return res.send({
       data: null,
       meta: {
@@ -18,16 +25,16 @@ router.get('/',function(req, res){
         message: '获取所有存在考试学科失败'
       }
     })
-  },data => {
+  }, data => {
     var dataStr = JSON.stringify(data)
     data = JSON.parse(dataStr)
     console.log(data)
     res.send({
       data: {
-          data: data[0],
-          total: util.arrObj({}, data[1]).total,
-          pagesize: parseInt(queryInfo.pagesize),
-          pagenum: parseInt(queryInfo.pagenum),
+        data: data[0],
+        total: util.arrObj({}, data[1]).total,
+        pagesize: parseInt(queryInfo.pagesize),
+        pagenum: parseInt(queryInfo.pagenum),
       },
       meta: {
         status: 200,
@@ -35,17 +42,19 @@ router.get('/',function(req, res){
       }
     })
   })
+
+
 })
 
 // 获取对应学科的 所有同学的成绩
 // 先判断对应学科是否有成绩存在
-router.get('/getAllScore/:id', function(req, res){
+router.get('/getAllScore/:id', function (req, res) {
   var testCode = req.params.id
   var sql = $sql.getAllScore(testCode)
   // console.log(sql,testCode)
   var isSql = $sql.isScore(testCode)
-  publicDao.Query(isSql, function(err, data){
-    if(data.length){
+  publicDao.Query(isSql, function (err, data) {
+    if (data.length) {
       // 如果有成绩的话
       publicDao.multiQuery(sql, err => {
         return res.send({
@@ -70,7 +79,7 @@ router.get('/getAllScore/:id', function(req, res){
           }
         })
       })
-    }else{
+    } else {
       // console.log(data)
       return res.send({
         data: null,
@@ -80,7 +89,7 @@ router.get('/getAllScore/:id', function(req, res){
         }
       })
     }
-    if(err){
+    if (err) {
       return res.send({
         data: null,
         meta: {
@@ -91,16 +100,16 @@ router.get('/getAllScore/:id', function(req, res){
     }
 
   })
-  
+
 })
 
 // 根据id查成绩
-router.get('/getScoreById/:id',function(req, res){
+router.get('/getScoreById/:id', function (req, res) {
   var id = req.params.id;
   var sql = $sql.getScoreById(id);
   console.log(id, sql)
-  publicDao.Query(sql, function(err,data){
-    if(err){
+  publicDao.Query(sql, function (err, data) {
+    if (err) {
       return res.send({
         data: null,
         meta: {
